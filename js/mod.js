@@ -1,8 +1,8 @@
 let modInfo = {
-	name: "The ??? Tree",
-	id: "mymod",
-	author: "nobody",
-	pointsName: "points",
+	name: "外卖树",
+	id: "food-tree",
+	author: "Hydrpgenated233",
+	pointsName: "foods",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -14,66 +14,59 @@ let modInfo = {
 // Set your version in num and name
 let VERSION = {
 	num: "0.0",
-	name: "Literally nothing",
+	name: "帅otto帅",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+		- 今天来点大家想看的。`
 
-let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
+let winText = `你则么死了？`
 
-// If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
-// (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything"]
+// 新函数屏蔽器
+var doNotCallTheseFunctionsEveryTick = []
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
 }
 
-// Determines if it should show points/sec
+// 是否显示获得
 function canGenPoints(){
 	return true
 }
 
-// Calculate points/sec!
+// 计算获得
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	if (hasUpgrade('exp', 11)) gain = gain.times(2)
+	if (hasUpgrade('exp', 12)) gain = gain.times(upgradeEffect('exp',12))
+	gain=gain.times(buyableEffect('exp',11))
 	return gain
 }
 
-// You can add non-layer related variables that should to into "player" and be saved here, along with default values
+// 不属于任何层的数据存放处，需要初始值。
 function addedPlayerData() { return {
 }}
 
-// Display extra things at the top of the page
+// 顶部显示文字。
 var displayThings = [
 ]
 
-// Determines when the game "ends"
+// 结局条件
 function isEndgame() {
 	return player.points.gte(new Decimal("e280000000"))
 }
 
 
-
-// Less important things beyond this point!
-
-// Style for the background, can be a function
+// 背景样式，可以为函数。
 var backgroundStyle = {
 
 }
 
-// You can change this if you have things that can be messed up by long tick lengths
+// 有可能因长刻度长度的bug可以改
 function maxTickLength() {
-	return(3600) // Default is 1 hour which is just arbitrarily large
-}
-
-// Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
-// you can cap their current resources with this.
-function fixOldSave(oldVersion){
+	return(3600) // 默认一小时
 }
