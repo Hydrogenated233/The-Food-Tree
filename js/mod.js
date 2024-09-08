@@ -1,12 +1,12 @@
 let modInfo = {
 	name: "外卖树",
 	id: "food-tree",
-	author: "Hydrpgenated233",
-	pointsName: "foods",
+	author: "Hydrogenated233",
+	pointsName: "食物",
 	modFiles: ["layers.js", "tree.js"],
 
-	discordName: "",
-	discordLink: "",
+	discordName: "鸿运当头666",
+	discordLink: "https://hydrogenated233.github.io/The-Food-Tree/",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
@@ -37,13 +37,14 @@ function canGenPoints(){
 
 // 计算获得
 function getPointGen() {
-	if(!canGenPoints())
-		return new Decimal(0)
-
+	if(!canGenPoints()) return new Decimal(0)
 	let gain = new Decimal(1)
-	if (hasUpgrade('exp', 11)) gain = gain.times(2)
+	if (hasUpgrade('exp', 11)) gain = gain.times(upgradeEffect('exp',11))
 	if (hasUpgrade('exp', 12)) gain = gain.times(upgradeEffect('exp',12))
 	gain=gain.times(buyableEffect('exp',11))
+	if (hasUpgrade('exp', 14)) gain = gain.times(upgradeEffect('exp',14))
+	if (hasUpgrade('exp', 15)) gain = gain.pow(upgradeEffect('exp',15))
+	if (hasChallenge('exp', 11)) gain = gain.times(challengeEffect('exp', 11))
 	return gain
 }
 
@@ -53,17 +54,18 @@ function addedPlayerData() { return {
 
 // 顶部显示文字。
 var displayThings = [
+	"结局:e10"
 ]
 
 // 结局条件
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal("e10"))
 }
 
 
 // 背景样式，可以为函数。
 var backgroundStyle = {
-
+	"color":"grey"
 }
 
 // 有可能因长刻度长度的bug可以改
