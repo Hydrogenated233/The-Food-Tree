@@ -13,8 +13,26 @@ addLayer("A", {
         11: {
             name: "吃饱了撑的",
             done() {return player.points.gte(50)},
-            onComplete() {this.points+=1},
-            tooltip: "玩原神玩的（bushi",
+            tooltip:"50食物<br>玩原神玩的（bushi",
+            onComplete() {player.A.points = player.A.points.add(1)},
+        },
+        12: {
+            name: "大胃王",
+            done() {return player.points.gte(1000)},
+            tooltip:"1,000食物<br>100%HF胃酸",
+            onComplete() {player.A.points = player.A.points.add(1)},
+        },
+        13: {
+            name: "三国杀是最好的游戏",
+            done() {return player.points.gte('e5')},
+            tooltip:"100,000食物<br>三国杀是世界上最好的游戏，不服去打差评",
+            onComplete() {player.A.points = player.A.points.add(1)},
+        },
+        14: {
+            name: "科学计数法",
+            done() {return player.points.gte('e9')},
+            tooltip:"1e9食物<br>是什么意思呢？",
+            onComplete() {player.A.points = player.A.points.add(1)},
         },
     }
 })
@@ -92,12 +110,25 @@ addLayer("exp", {
             cost: new Decimal(500),
             
         },
+        16:{
+            effect() {
+                return 1.2
+            },
+            title:"自己做菜",
+            description: "买饭速度<sup>1.2</sup>",
+            cost: new Decimal('e6'),
+            
+        },
     },
     buyables: {
         11: {
-            cost(x) { return new Decimal(1).mul(x).add(1)},
-            effect(x) {return new Decimal(1).mul(x).add(1)},
-            display() { return `大号垃圾桶<br>加速买饭速度*`+format(this.effect(getBuyableAmount(this.layer, this.id)))+`<br>成本：`+ format(this.cost(getBuyableAmount(this.layer, this.id)))},
+            cost(x) { return new Decimal(1).mul(x).add(1).pow(1.1)},
+            effect(x) {return new Decimal(1).mul(x).add(1).pow(1.1)},
+            display() { 
+                return `大号垃圾桶<br>加速买饭速度*`+
+                format(this.effect(getBuyableAmount(this.layer, this.id)))+
+                `<br>成本：`+ format(this.cost(getBuyableAmount(this.layer, this.id)))
+            },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -110,21 +141,33 @@ addLayer("exp", {
             requirementDescription: "100经验",
             effectDescription: "鼠标是什么？每秒获得10%经验",
             done() { return player.exp.points.gte(100) }
-        }
+        },
+        1: {
+            requirementDescription: "100,000经验",
+            effectDescription: "太慢了？每秒获得25%经验",
+            done() { return player.exp.points.gte("e5") }
+        },
+        2: {
+            requirementDescription: "1e10经验",
+            effectDescription: "我有一个大胆的想法。每秒获得100%经验",
+            done() { return player.exp.points.gte("e10") }
+        },
     },
     passiveGeneration(){
         let passive = new Decimal(0)
         if (hasMilestone("exp", 0)) passive = passive.add(0.1) //10%
+        if (hasMilestone("exp", 1)) passive = passive.add(0.15) //25%
+        if (hasMilestone("exp", 2)) passive = passive.add(0.75) //100%
         return passive
     },
     challenges: {
         11: {
             name: "脑残骑手",
             challengeDescription: "“外卖放置区”效果<sup>0.6</sup>",
-            goalDescription: "需求：1000000食物",
+            goalDescription: "需求：1,000,000食物",
             canComplete: function() {return player.points.gte("e6")},
             rewardDescription: "基于食物加速买饭速度",
-            rewardEffect() {return player.points.add(1).pow(0.15)},
+            rewardEffect() {return player.points.add(1).pow(0.1)},
             rewardDisplay() {return "*"+format(this.rewardEffect())},
         },
     }

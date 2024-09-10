@@ -38,13 +38,17 @@ function canGenPoints(){
 // 计算获得
 function getPointGen() {
 	if(!canGenPoints()) return new Decimal(0)
+	// 基础值
 	let gain = new Decimal(1)
+	// 乘数
 	if (hasUpgrade('exp', 11)) gain = gain.times(upgradeEffect('exp',11))
 	if (hasUpgrade('exp', 12)) gain = gain.times(upgradeEffect('exp',12))
-	gain=gain.times(buyableEffect('exp',11))
 	if (hasUpgrade('exp', 14)) gain = gain.times(upgradeEffect('exp',14))
-	if (hasUpgrade('exp', 15)) gain = gain.pow(upgradeEffect('exp',15))
+	gain=gain.times(buyableEffect('exp',11))
 	if (hasChallenge('exp', 11)) gain = gain.times(challengeEffect('exp', 11))
+	// 指数
+	if (hasUpgrade('exp', 15)) gain = gain.pow(upgradeEffect('exp',15))
+	if (hasUpgrade('exp', 16)) gain = gain.pow(upgradeEffect('exp',16))
 	return gain
 }
 
@@ -54,12 +58,12 @@ function addedPlayerData() { return {
 
 // 顶部显示文字。
 var displayThings = [
-	"结局:e10"
+	"结局:e21"
 ]
 
 // 结局条件
 function isEndgame() {
-	return player.points.gte(new Decimal("e10"))
+	return player.points.gte(new Decimal("e21"))
 }
 
 
