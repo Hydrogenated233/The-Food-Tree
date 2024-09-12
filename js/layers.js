@@ -11,34 +11,59 @@ addLayer("A", {
     color: "#F0E686",
     achievements: {
         11: {
+            name: "万物伊始",
+            done() {return true},
+            tooltip:"0食物",
+            onComplete() {player.A.points = player.A.points.add(1)},
+        },
+        12: {
             name: "吃饱了撑的",
             done() {return player.points.gte(50)},
             tooltip:"50食物<br>玩原神玩的（bushi",
             onComplete() {player.A.points = player.A.points.add(1)},
         },
-        12: {
+        13: {
             name: "大胃王",
             done() {return player.points.gte(1000)},
             tooltip:"1,000食物<br>100%HF胃酸",
             onComplete() {player.A.points = player.A.points.add(1)},
         },
-        13: {
+        14: {
             name: "三国杀是最好的游戏",
             done() {return player.points.gte('e5')},
             tooltip:"100,000食物<br>三国杀是世界上最好的游戏，不服去打差评",
             onComplete() {player.A.points = player.A.points.add(1)},
         },
-        14: {
+        15: {
+            name: "DIU是什么？短跑运动员。",
+            done() {return getPointGen().gte(1000)},
+            tooltip:"每秒获得1000食物<br>香港运动员",
+            onComplete() {player.A.points = player.A.points.add(1)},
+        },
+        16: {
             name: "科学计数法",
             done() {return player.points.gte('e9')},
             tooltip:"1e9食物<br>是什么意思呢？",
             onComplete() {player.A.points = player.A.points.add(1)},
         },
-        14: {
+        17: {
             name: "每人吃一顿饭",
             done() {return player.points.gte('8.05e9')},
             tooltip:"8.05e9食物<br>tools mall",
             onComplete() {player.A.points = player.A.points.add(1)},
+        },
+        18: {
+            name: "各单位注意，检测到在途的核打击",
+            done() {return hasChallenge('exp', 12)},
+            tooltip:"完成“劣质”<br>左脚踩右脚",
+            onComplete() {player.A.points = player.A.points.add(1)},
+        },
+        19: {
+            name: "一个谷歌",
+            done() {return player.points.gte('e100')},
+            tooltip:"1.00e100食物<br>大数的第十八层地狱<br>大数之神眷顾了你，买饭速度<sup>1.01</sup>",
+            onComplete() {player.A.points = player.A.points.add(1)},
+            effect() {return 1.01},
         },
     }
 })
@@ -159,11 +184,7 @@ addLayer("exp", {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
-            buyMax() {
-                while(this.canAfford()){
-                    this.buy()
-                }
-            }
+            
         },
     },
     milestones: {
@@ -204,7 +225,7 @@ addLayer("exp", {
             name: "劣质",
             challengeDescription: `“外卖放置区”效果<sup>0.3</sup><br>
             其余非固定升级<sup>0.5</sup>`,
-            goalDescription: "需求：e30食物",
+            goalDescription: "需求：e20食物",
             canComplete: function() {return player.points.gte("e20")},
             rewardDescription: "基于经验加速买饭速度",
             rewardEffect() {return player.exp.points.add(1).pow(0.13)+'x'},
