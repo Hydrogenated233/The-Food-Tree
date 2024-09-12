@@ -46,6 +46,7 @@ function getPointGen() {
 	if (hasUpgrade('exp', 14)) gain = gain.times(upgradeEffect('exp',14))
 	gain=gain.times(buyableEffect('exp',11))
 	if (hasChallenge('exp', 11)) gain = gain.times(challengeEffect('exp', 11))
+	if (hasChallenge('exp', 12)) gain = gain.times(challengeEffect('exp', 12))
 	// 指数
 	if (hasUpgrade('exp', 15)) gain = gain.pow(upgradeEffect('exp',15))
 	if (hasUpgrade('exp', 16)) gain = gain.pow(upgradeEffect('exp',16))
@@ -58,12 +59,12 @@ function addedPlayerData() { return {
 
 // 顶部显示文字。
 var displayThings = [
-	"结局:e21"
+	"结局:e35"
 ]
 
 // 结局条件
 function isEndgame() {
-	return player.points.gte(new Decimal("e21"))
+	return player.points.gte(new Decimal("e35"))
 }
 
 

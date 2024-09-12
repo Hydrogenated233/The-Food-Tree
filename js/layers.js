@@ -1,5 +1,5 @@
 addLayer("A", {
-    name: "ach", // 可选项，基本都用id/
+    name: "ach", // 可选项，基本都用id
     symbol: "A", // 层的按钮显示文字，默认为id的第一个大写字母。
     position: 1, // 行内的水平位置。默认使用id按字母顺序排序。
     row: "side", // 行数（零索引）。
@@ -34,6 +34,12 @@ addLayer("A", {
             tooltip:"1e9食物<br>是什么意思呢？",
             onComplete() {player.A.points = player.A.points.add(1)},
         },
+        14: {
+            name: "每人吃一顿饭",
+            done() {return player.points.gte('8.05e9')},
+            tooltip:"8.05e9食物<br>tools mall",
+            onComplete() {player.A.points = player.A.points.add(1)},
+        },
     }
 })
 
@@ -45,7 +51,7 @@ addLayer("exp", {
         unlocked: true,
 		points: new Decimal(0),
     }},
-    color: "#4BDC13",
+    color: "#607EA3",
     requires: new Decimal(10), // 可以是按需求增加的函数。
     resource: "经验", // 资源名。
     baseResource: "食物", // 资源需求。
@@ -58,7 +64,9 @@ addLayer("exp", {
         return mult
     },
     gainExp() { // 获得指数。
-        return new Decimal(1)
+        exp = new Decimal(1)
+        if (hasUpgrade('exp', 17)) exp = exp.add(upgradeEffect('exp', 17))
+        return exp
     },
     row: 0, // 行数（零索引）。
     layerShown(){return true},
@@ -73,7 +81,10 @@ addLayer("exp", {
         },
         12:{
             effect() {
-                return player[this.layer].points.add(1).pow(0.5).pow(inChallenge('exp', 11)?0.6:1)
+                effect = player[this.layer].points.add(1).pow(0.5)
+                if(inChallenge('exp', 11)) effect = effect.pow(0.6)
+                if(inChallenge('exp', 12)) effect = effect.pow(0.3)
+                return effect
             },
             effectDisplay() { return format(this.effect())+"x" },
             title:"外卖放置区",
@@ -83,7 +94,9 @@ addLayer("exp", {
         },
         13:{
             effect() {
-                return player[this.layer].points.add(1).pow(0.15)
+                effect = player[this.layer].points.add(1).pow(0.15)
+                if(inChallenge('exp', 12)) effect = effect.pow(0.5)
+                return effect
             },
             effectDisplay() { return format(this.effect())+"x" },
             title:"更大的垃圾桶",
@@ -93,7 +106,9 @@ addLayer("exp", {
         },
         14:{
             effect() {
-                return player[this.layer].points.add(10).log(4)
+                effect = player[this.layer].points.add(10).log(4)
+                if(inChallenge('exp', 12)) effect = effect.pow(0.5)
+                return effect
             },
             effectDisplay() { return format(this.effect())+"x" },
             title:"摇人",
@@ -119,14 +134,24 @@ addLayer("exp", {
             cost: new Decimal('e6'),
             
         },
+        17:{
+            effect() {
+                return 0.2
+            },
+            title:"起飞",
+            description: "经验获取指数+0.2",
+            cost: new Decimal('e10'),
+            
+        },
     },
     buyables: {
         11: {
-            cost(x) { return new Decimal(1).mul(x).add(1).pow(1.1)},
-            effect(x) {return new Decimal(1).mul(x).add(1).pow(1.1)},
+            cost(x) { return new Decimal(1).mul(x).add(1)},
+            effect(x) {return new Decimal(1).mul(x).add(1).pow(1.5)},
             display() { 
-                return `大号垃圾桶<br>加速买饭速度*`+
+                return `大号垃圾桶<br>加速买饭速度`+
                 format(this.effect(getBuyableAmount(this.layer, this.id)))+
+                `x`+
                 `<br>成本：`+ format(this.cost(getBuyableAmount(this.layer, this.id)))
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
@@ -134,6 +159,11 @@ addLayer("exp", {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
+            buyMax() {
+                while(this.canAfford()){
+                    this.buy()
+                }
+            }
         },
     },
     milestones: {
@@ -162,13 +192,23 @@ addLayer("exp", {
     },
     challenges: {
         11: {
-            name: "脑残骑手",
+            name: "公摊",
             challengeDescription: "“外卖放置区”效果<sup>0.6</sup>",
             goalDescription: "需求：1,000,000食物",
             canComplete: function() {return player.points.gte("e6")},
             rewardDescription: "基于食物加速买饭速度",
             rewardEffect() {return player.points.add(1).pow(0.1)},
-            rewardDisplay() {return "*"+format(this.rewardEffect())},
+            rewardDisplay() {return format(this.rewardEffect())+'x'},
+        },
+        12: {
+            name: "劣质",
+            challengeDescription: `“外卖放置区”效果<sup>0.3</sup><br>
+            其余非固定升级<sup>0.5</sup>`,
+            goalDescription: "需求：e30食物",
+            canComplete: function() {return player.points.gte("e20")},
+            rewardDescription: "基于经验加速买饭速度",
+            rewardEffect() {return player.exp.points.add(1).pow(0.13)+'x'},
+            rewardDisplay() {return format(this.rewardEffect())+'x'},
         },
     }
 })
