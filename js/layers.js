@@ -90,7 +90,10 @@ addLayer("exp", {
     },
     gainExp() { // 获得指数。
         exp = new Decimal(1)
-        if (hasUpgrade('exp', 17)) exp = exp.add(upgradeEffect('exp', 17))
+        if (hasUpgrade('exp', 22)) exp = exp.add(upgradeEffect('exp', 22))
+        if (hasUpgrade('exp', 23)) exp = exp.add(upgradeEffect('exp', 23))
+        if (hasUpgrade('exp', 24)) exp = exp.add(upgradeEffect('exp', 24))
+        if (hasUpgrade('exp', 25)) exp = exp.add(upgradeEffect('exp', 25))
         return exp
     },
     row: 0, // 行数（零索引）。
@@ -150,7 +153,7 @@ addLayer("exp", {
             cost: new Decimal(500),
             
         },
-        16:{
+        21:{
             effect() {
                 return 1.2
             },
@@ -159,20 +162,46 @@ addLayer("exp", {
             cost: new Decimal('e6'),
             
         },
-        17:{
+        22:{
             effect() {
-                return 0.2
+                return 0.05
             },
             title:"起飞",
-            description: "经验获取指数+0.2",
+            description: "经验获取指数+0.05",
             cost: new Decimal('e10'),
             
+        },
+        23:{
+            effect() {
+                return 0.1
+            },
+            title:"数学归纳法",
+            description: "经验获取指数+0.1",
+            cost: new Decimal('e60'),
+            
+        },
+        24:{
+            effect() {
+                return 0.1
+            },
+            title:"编程递归法",
+            description: "经验获取指数+0.1",
+            cost: new Decimal('e120'),
+            
+        },
+        25:{
+            effect() {
+                return 0
+            },
+            title:"准备好了吗",
+            description: "没有效果",
+            cost: new Decimal('e200'),
         },
     },
     buyables: {
         11: {
             cost(x) { return new Decimal(1).mul(x).add(1)},
-            effect(x) {return new Decimal(1).mul(x).add(1).pow(1.5)},
+            effect(x) {return new Decimal(1).mul(x).add(1).pow(3)},
             display() { 
                 return `大号垃圾桶<br>加速买饭速度`+
                 format(this.effect(getBuyableAmount(this.layer, this.id)))+
@@ -232,4 +261,45 @@ addLayer("exp", {
             rewardDisplay() {return format(this.rewardEffect())+'x'},
         },
     }
+})
+
+addLayer("tec", {
+    name: "技术", // 可选项，基本都用id
+    symbol: "T", // 层的按钮显示文字，默认为id的第一个大写字母。
+    position: 0, // 行内的水平位置。默认使用id按字母顺序排序。
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#3F3F3F",
+    requires: new Decimal('e580'), // 可以是按需求增加的函数。
+    resource: "技术", // 资源名。
+    baseResource: "经验", // 资源需求。
+    baseAmount() {return player.exp.points}, // 获得基础值。
+    type: "normal", // normal: 成本取决于获得数量。 static: 成本取决于已有的数量。
+    exponent: 0.1, // 膨胀指数。
+    gainMult() { // 获得倍数。
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // 获得指数。
+        exp = new Decimal(1)
+        return exp
+    },
+    row: 1, // 行数（零索引）。
+    layerShown(){return true},
+    upgrades: {
+        11:{
+            effect() {
+                return 2
+            },
+            title:"机器人买饭",
+            description: "买饭速度翻倍",
+            cost: new Decimal(1000),
+        },
+    },
+    passiveGeneration(){
+        let passive = new Decimal(0)
+        return passive
+    },
 })

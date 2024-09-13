@@ -44,12 +44,13 @@ function getPointGen() {
 	if (hasUpgrade('exp', 11)) gain = gain.times(upgradeEffect('exp',11))
 	if (hasUpgrade('exp', 12)) gain = gain.times(upgradeEffect('exp',12))
 	if (hasUpgrade('exp', 14)) gain = gain.times(upgradeEffect('exp',14))
+	if (hasUpgrade('tec', 11)) gain = gain.times(upgradeEffect('tec',11))
 	gain=gain.times(buyableEffect('exp',11))
 	if (hasChallenge('exp', 11)) gain = gain.times(challengeEffect('exp', 11))
 	if (hasChallenge('exp', 12)) gain = gain.times(challengeEffect('exp', 12))
 	// 指数
 	if (hasUpgrade('exp', 15)) gain = gain.pow(upgradeEffect('exp', 15))
-	if (hasUpgrade('exp', 16)) gain = gain.pow(upgradeEffect('exp', 16))
+	if (hasUpgrade('exp', 21)) gain = gain.pow(upgradeEffect('exp', 21))
 	if (hasAchievement('A', 19)) gain = gain.pow(achievementEffect('A', 19))
 	return gain
 }
